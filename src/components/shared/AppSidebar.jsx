@@ -62,31 +62,31 @@ const items = [
   {
     title: "Dashboard",
     children: [
-      { title: "Dashboard", url: "/dashboard" },
-      { title: "Lab Equipments", url: "/dashboard/lab-equipments" },
+      { title: "Dashboard", url: "/" },
+      { title: "Lab Equipments", url: "/lab-equipments" },
     ],
   },
   {
     title: "Testing",
     children: [
-      { title: "Proficiency Testing", url: "/dashboard/proficiency-testing" },
-      { title: "Calibration Testing", url: "/dashboard/calibration-testing" },
+      { title: "Proficiency Testing", url: "/proficiency-testing" },
+      { title: "Calibration Testing", url: "/calibration-testing" },
     ],
   },
   {
     title: "Lab",
     children: [
-      { title: "Add Jobs", url: "/dashboard/add-jobs" },
-      { title: "Tracebility", url: "/dashboard/tracebility" },
-      { title: "Job Compliance", url: "/dashboard/job-compliance" },
+      { title: "Add Jobs", url: "/add-jobs" },
+      { title: "Tracebility", url: "/tracebility" },
+      { title: "Job Compliance", url: "/job-compliance" },
       // { title: "Test Certificates", url: "/dashboard/test-certificates" },
     ],
   },
   {
     title: "Personal",
     children: [
-      { title: "Attendance", url: "/dashboard/attendance" },
-      { title: "Leave Application", url: "/dashboard/leave-application" },
+      { title: "Attendance", url: "/attendance" },
+      { title: "Leave Application", url: "/leave-application" },
     ],
   },
 ];
@@ -146,7 +146,7 @@ export function AppSidebar() {
               
                 <DropdownMenuItem>
                 <div onClick={()=>{
-                  window.location.href='/dashboard/user-settings'
+                  window.location.href='/user-settings'
                 }} className="flex gap-2 items-center">
                 <Settings size={20} />
                   <span>Settings</span>

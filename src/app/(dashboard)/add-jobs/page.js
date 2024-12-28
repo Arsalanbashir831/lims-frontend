@@ -1,16 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { testMethodsData } from "@/data/TestData";
 import { FileUpIcon, PlusCircleIcon } from "lucide-react";
+import useApi from "@/hooks/use-api";
 
 const AddJobForm = () => {
-  const [testMethods, setTestMethods] = useState(testMethodsData);
+  const [testMethods, setTestMethods] = useState([]);
   const [formData, setFormData] = useState({
     client_name: "",
     client_contact: "",
@@ -21,7 +28,22 @@ const AddJobForm = () => {
     selected_test: null,
     task_description: "",
   });
-
+  const { callApi, loading } = useApi();
+  useEffect(() => {
+    const fetchTestMethods = async () => {
+      const token = localStorage.getItem("accessToken");
+      await callApi("/api/testmethods", "GET", "", {
+        Authorization: `Bearer ${token}`,
+      })
+        .then((data) => {
+          setTestMethods(data);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    };
+    fetchTestMethods();
+  }, []);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -49,7 +71,8 @@ const AddJobForm = () => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const token = localStorage.getItem("accessToken");
     const payload = {
       client_data: {
         client_name: formData.client_name,
@@ -60,8 +83,16 @@ const AddJobForm = () => {
         tests: formData.tests,
       },
     };
+    callApi("/api/test_compliance/", "POST", payload, {
+      Authorization: `Bearer ${token}`,
+    })
+      .then((data) => {
+        alert("Job Submited");
+      })
+      .catch(() => {
+        alert("Error");
+      });
     console.log("Submitting Payload:", payload);
-    // Add API call to submit the form data
   };
 
   return (
@@ -102,8 +133,13 @@ const AddJobForm = () => {
           <Label htmlFor="selected_test">Select Test Method</Label>
           <Select
             onValueChange={(value) => {
-              const selectedTest = testMethods.find((test) => test.test_id === parseInt(value));
-              setCurrentTest((prev) => ({ ...prev, selected_test: selectedTest }));
+              const selectedTest = testMethods.find(
+                (test) => test.test_id === parseInt(value)
+              );
+              setCurrentTest((prev) => ({
+                ...prev,
+                selected_test: selectedTest,
+              }));
             }}
           >
             <SelectTrigger>
@@ -129,7 +165,10 @@ const AddJobForm = () => {
           />
         </div>
         <div>
-          <Button onClick={addTest} className="bg-green-500 text-white hover:bg-green-600">
+          <Button
+            onClick={addTest}
+            className="bg-green-500 text-white hover:bg-green-600"
+          >
             Add Test
           </Button>
         </div>
@@ -143,7 +182,9 @@ const AddJobForm = () => {
               >
                 <div>
                   <p className="font-medium">{test.selected_test.test_name}</p>
-                  <p className="text-sm text-gray-600">{test.task_description}</p>
+                  <p className="text-sm text-gray-600">
+                    {test.task_description}
+                  </p>
                 </div>
                 <Button
                   variant="outline"
@@ -157,8 +198,11 @@ const AddJobForm = () => {
           </div>
         </div>
         <div className="flex justify-center ">
-          <Button onClick={handleSubmit} className="w-full bg-blue-500 text-white hover:bg-blue-600">
-            <FileUpIcon/> Submit Job
+          <Button
+            onClick={handleSubmit}
+            className="w-full bg-blue-500 text-white hover:bg-blue-600"
+          >
+            <FileUpIcon /> Submit Job
           </Button>
         </div>
       </div>
