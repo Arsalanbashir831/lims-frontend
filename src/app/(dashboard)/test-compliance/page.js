@@ -1,7 +1,7 @@
 'use client';
 import useApi from '@/hooks/use-api';
 import { useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Spinner from '@/components/shared/Spinner';
 
@@ -113,6 +113,7 @@ const Page = () => {
     };
 
     return (
+      
         <div className="p-6 bg-gray-100 min-h-screen">
             {loading || !currJobData ? (
                 <Spinner />
