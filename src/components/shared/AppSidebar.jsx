@@ -146,14 +146,14 @@ const {logout} = useContext(AuthContext)
                 className="w-[--radix-popper-anchor-width]"
               >
               
-                <DropdownMenuItem>
+                {/* <DropdownMenuItem>
                 <div onClick={()=>{
                   window.location.href='/user-settings'
                 }} className="flex gap-2 items-center">
                 <Settings size={20} />
                   <span>Settings</span>
                 </div>
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuItem onClick={logout}>
                 <div className="flex gap-2 items-center">
                 <LogOut size={20} />
