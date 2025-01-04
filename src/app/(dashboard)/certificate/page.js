@@ -1,7 +1,7 @@
 'use client'
 import CertificateComponent from '@/components/shared/certificate/CertificateComponent'
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Spinner from "@/components/shared/Spinner";
 import useApi from "@/hooks/use-api";
 import { useSearchParams } from "next/navigation";
@@ -30,7 +30,9 @@ const page = () => {
     // console.log(currJobData?.client_data?.client_name);
   return (
     <div>
+    <Suspense fallback={<p>Loading...</p>}>
         <CertificateComponent reportData={currJobData}/>
+    </Suspense>
     </div>
   )
 }
