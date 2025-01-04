@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { testMethodsData } from "@/data/TestData";
 import { FileUpIcon, PlusCircleIcon } from "lucide-react";
 import useApi from "@/hooks/use-api";
+import { useRouter } from "next/navigation";
 
 const AddJobForm = () => {
   const [testMethods, setTestMethods] = useState([]);
@@ -29,6 +30,7 @@ const AddJobForm = () => {
     task_description: "",
   });
   const { callApi, loading } = useApi();
+  const router = useRouter()
   useEffect(() => {
     const fetchTestMethods = async () => {
       const token = localStorage.getItem("accessToken");
@@ -88,6 +90,8 @@ const AddJobForm = () => {
     })
       .then((data) => {
         alert("Job Submited");
+        router.push('/job-compliance')
+        
       })
       .catch(() => {
         alert("Error");

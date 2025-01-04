@@ -37,6 +37,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext";
 
 // Function to map names to icons.
 const getIcon = (name) => {
@@ -93,7 +95,7 @@ const items = [
 
 export function AppSidebar() {
   const pathname = usePathname(); // Get the current path
-
+const {logout} = useContext(AuthContext)
   return (
     <Sidebar>
       <SidebarHeader>
@@ -152,7 +154,7 @@ export function AppSidebar() {
                   <span>Settings</span>
                 </div>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={logout}>
                 <div className="flex gap-2 items-center">
                 <LogOut size={20} />
                   <span>Sign Out</span>

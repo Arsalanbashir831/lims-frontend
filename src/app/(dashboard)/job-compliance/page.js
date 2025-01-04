@@ -53,16 +53,26 @@ const JobListPage = () => {
   // Handle test compliance action
   const handleTestCompliance = (jobId) => {
     console.log(`Testing compliance for Job ID: ${jobId}`);
-    router.push(`/dashboard/job-compliance?jobId=${jobId}`);
+    router.push(`/test-compliance?jobId=${jobId}&isEdit=false`);
+  };
+
+  const handleEditTestCompliance = (jobId) => {
+    console.log(`Testing compliance for Job ID: ${jobId}`);
+    router.push(`/test-compliance?jobId=${jobId}&isEdit=true`);
   };
   const handleTestCheckList = (jobId) => {
     console.log(`Testing compliance for Job ID: ${jobId}`);
-    router.push(`/dashboard/create-checklist?jobId=${jobId}`);
+    router.push(`/create-checklist?jobId=${jobId}&preview=false`);
   };
+  
 
+  const handlePreviewChecklist = (jobId) => {
+    console.log(`Testing compliance for Job ID: ${jobId}`);
+    router.push(`/create-checklist?jobId=${jobId}&preview=true`);
+  };
   // Handle certificate navigation
   const navigateToCertificate = (jobId) => {
-    router.push(`/dashboard/test-certificates?jobId=${jobId}`);
+    router.push(`/certificate?jobId=${jobId}`);
   };
 
   return (
@@ -126,13 +136,26 @@ const JobListPage = () => {
                 onClick={() => handleTestCompliance(job.job_id)}
                 className="flex items-center gap-2 hover:bg-blue-50 cursor-pointer rounded-md px-3 py-2"
               >
-                <CheckCircle size={18} /> Test Compliance
+                <CheckCircle size={18} /> Preview Test Compliance
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => handleEditTestCompliance(job.job_id)}
+                className="flex items-center gap-2 hover:bg-blue-50 cursor-pointer rounded-md px-3 py-2"
+              >
+                <CheckCircle size={18} />  Start Test Compliance
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleTestCheckList(job.job_id)}
                 className="flex items-center gap-2 hover:bg-blue-50 cursor-pointer rounded-md px-3 py-2"
               >
                 <CheckCircle size={18} /> Create Checklist
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handlePreviewChecklist(job.job_id)}
+                className="flex items-center gap-2 hover:bg-blue-50 cursor-pointer rounded-md px-3 py-2"
+              >
+                <CheckCircle size={18} /> Preview Checklist
               </DropdownMenuItem>
 
               <DropdownMenuItem
