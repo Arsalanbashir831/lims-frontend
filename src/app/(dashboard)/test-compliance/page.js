@@ -1,6 +1,6 @@
 'use client';
 import useApi from '@/hooks/use-api';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { Suspense, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Spinner from '@/components/shared/Spinner';
@@ -12,7 +12,7 @@ const Page = () => {
     const searchParams = useSearchParams();
     const jobId = searchParams.get("jobId");
     const isEdit = searchParams.get('isEdit') === "true";
-
+    const router = useRouter()
     useEffect(() => {
         const fetchJob = async () => {
             const token = localStorage.getItem("accessToken");
@@ -106,6 +106,7 @@ const Page = () => {
         )
             .then(() => {
                 alert("Payload submitted successfully.");
+                router.push(`/test-compliance?jobId=${jobId}&isEdit=false`)
             })
             .catch(() => {
                 alert("Error in submission.");

@@ -6,6 +6,7 @@ import Spinner from "@/components/shared/Spinner";
 import AppDynamicTable from "@/components/shared/AppDynamicTable";
 import useApi from "@/hooks/use-api";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const [currJobData, setCurrJobData] = useState(null);
@@ -13,7 +14,7 @@ const Page = () => {
   const searchParams = useSearchParams();
   const jobId = searchParams.get("jobId");
   const isPreview = searchParams.get("preview") === "true";
-
+const router = useRouter()
   useEffect(() => {
     const fetchJob = async () => {
       const token = localStorage.getItem("accessToken");
@@ -67,6 +68,7 @@ const Page = () => {
     )
       .then(() => {
         alert("Payload submitted successfully.");
+        router.push(`/create-checklist?jobId=${jobId}&preview=true`)
       })
       .catch(() => {
         alert("Error in submission.");
