@@ -4,9 +4,6 @@ import { usePathname } from "next/navigation";
 import {
   Calendar,
   Home,
-  Inbox,
-  Search,
-  Settings,
   Table,
   RefreshCcw,
   Badge,
@@ -17,7 +14,14 @@ import {
   ChevronUp,
   LogOut,
   PlusCircle,
+  Menu,
+  Settings,
+  X,
 } from "lucide-react";
+
+import { useState, useContext } from "react";
+import { AuthContext } from "@/context/AuthContext";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 import {
   Sidebar,
@@ -31,16 +35,15 @@ import {
   SidebarMenuItem,
   SidebarFooter,
 } from "@/components/ui/sidebar";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useContext } from "react";
-import { AuthContext } from "@/context/AuthContext";
 
-// Function to map names to icons.
+// Function to map names to icons
 const getIcon = (name) => {
   const icons = {
     Dashboard: Home,
@@ -54,12 +57,12 @@ const getIcon = (name) => {
     "Leave Application": Calendar,
     Settings: Settings,
     "User Profile": User2Icon,
-    "Add Jobs":PlusCircle
+    "Add Jobs": PlusCircle,
   };
-  return icons[name] || Home; // Default to Home if no match.
+  return icons[name] || Home;
 };
 
-// Menu items grouped.
+// Menu items grouped
 const items = [
   {
     title: "Dashboard",
@@ -81,7 +84,6 @@ const items = [
       { title: "Add Jobs", url: "/add-jobs" },
       { title: "Tracebility", url: "/tracebility" },
       { title: "Job Compliance", url: "/job-compliance" },
-      // { title: "Test Certificates", url: "/dashboard/test-certificates" },
     ],
   },
   {
@@ -94,77 +96,150 @@ const items = [
 ];
 
 export function AppSidebar() {
-  const pathname = usePathname(); // Get the current path
-const {logout} = useContext(AuthContext)
+  const pathname = usePathname();
+  const { logout } = useContext(AuthContext);
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleMenuItemClick = () => {
+    if (isMobile) {
+      setIsOpen(false); // Close sidebar on mobile when a menu item is clicked
+    }
+  };
+
   return (
-    <Sidebar>
-      <SidebarHeader>
-        <img className="px-3 py-3" src="/gripco_logo.svg" />
-      </SidebarHeader>
-      <SidebarContent>
-        {items.map((group) => (
-          <SidebarGroup key={group.title}>
-            <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
-            <SidebarGroupContent>
+    <>
+      {/* Mobile Sidebar (Custom Drawer) */}
+      {isMobile && (
+        <>
+          {/* Hamburger Button */}
+          <div className="fixed top-4 left-4 z-50 bg-gray-800 p-2 rounded-md shadow-lg">
+            <button
+              onClick={() => setIsOpen(true)}
+              className="text-white focus:outline-none"
+            >
+              <Menu size={24} />
+            </button>
+          </div>
+
+          {/* Overlay (Backdrop) */}
+          {isOpen && (
+            <div
+              className="fixed inset-0 bg-black bg-opacity-50 z-40"
+              onClick={() => setIsOpen(false)}
+            />
+          )}
+
+          {/* Sidebar Drawer */}
+          <div
+            className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 z-50 ${
+              isOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
+          >
+            {/* Sidebar Header */}
+            <div className="flex items-center justify-between p-4 bg-white text-white">
+              <img className="h-10" src="/gripco_logo.svg" alt="Logo" />
+              <button onClick={() => setIsOpen(false)}>
+                <X size={24} />
+              </button>
+            </div>
+
+            {/* Sidebar Content */}
+            <SidebarContent>
+              {items.map((group) => (
+                <SidebarGroup key={group.title}>
+                  <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
+                  <SidebarGroupContent>
+                    <SidebarMenu>
+                      {group.children.map((item) => {
+                        const Icon = getIcon(item.title);
+                        const isActive = pathname === item.url;
+
+                        return (
+                          <SidebarMenuItem
+                            key={item.title}
+                            className={isActive ? "bg-gray-200 text-black" : ""}
+                            onClick={handleMenuItemClick} // Close drawer on click
+                          >
+                            <SidebarMenuButton asChild>
+                              <a href={item.url}>
+                                <Icon />
+                                <span>{item.title}</span>
+                              </a>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        );
+                      })}
+                    </SidebarMenu>
+                  </SidebarGroupContent>
+                </SidebarGroup>
+              ))}
+            </SidebarContent>
+
+            {/* Sidebar Footer */}
+            <SidebarFooter>
               <SidebarMenu>
-                {group.children.map((item) => {
-                  const Icon = getIcon(item.title); // Dynamically select icon
-                  const isActive = pathname === item.url; // Check if the current path matches the item's URL
-
-                  return (
-                    <SidebarMenuItem
-                      key={item.title}
-                      className={isActive ? "bg-gray-200 text-black" : ""}
-                    >
-                      <SidebarMenuButton  asChild>
-                        <a href={item.url}>
-                          <Icon />
-                          <span>{item.title}</span>
-                        </a>
+                <SidebarMenuItem>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <SidebarMenuButton>
+                        <User2 /> Arsalan Bashir
+                        <ChevronUp className="ml-auto" />
                       </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  );
-                })}
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent side="top">
+                      <DropdownMenuItem onClick={logout}>
+                        <div className="flex gap-2 items-center">
+                          <LogOut size={20} />
+                          <span>Sign Out</span>
+                        </div>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </SidebarMenuItem>
               </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ))}
-      </SidebarContent>
+            </SidebarFooter>
+          </div>
+        </>
+      )}
 
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
-                  <User2 /> Arsalan Bashir
-                  <ChevronUp className="ml-auto" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                className="w-[--radix-popper-anchor-width]"
-              >
-              
-                {/* <DropdownMenuItem>
-                <div onClick={()=>{
-                  window.location.href='/user-settings'
-                }} className="flex gap-2 items-center">
-                <Settings size={20} />
-                  <span>Settings</span>
-                </div>
-                </DropdownMenuItem> */}
-                <DropdownMenuItem onClick={logout}>
-                <div className="flex gap-2 items-center">
-                <LogOut size={20} />
-                  <span>Sign Out</span>
-                </div>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
-    </Sidebar>
+      {/* Desktop Sidebar */}
+      {!isMobile && (
+        <Sidebar>
+          <SidebarHeader>
+            <img className="px-3 py-3" src="/gripco_logo.svg" alt="Logo" />
+          </SidebarHeader>
+          <SidebarContent>
+            {items.map((group) => (
+              <SidebarGroup key={group.title}>
+                <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {group.children.map((item) => {
+                      const Icon = getIcon(item.title);
+                      const isActive = pathname === item.url;
+
+                      return (
+                        <SidebarMenuItem
+                          key={item.title}
+                          className={isActive ? "bg-gray-200 text-black" : ""}
+                        >
+                          <SidebarMenuButton asChild>
+                            <a href={item.url}>
+                              <Icon />
+                              <span>{item.title}</span>
+                            </a>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      );
+                    })}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            ))}
+          </SidebarContent>
+        </Sidebar>
+      )}
+    </>
   );
 }
